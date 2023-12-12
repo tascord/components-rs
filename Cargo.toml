@@ -1,0 +1,19 @@
+[package]
+name = "rm-components"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures-signals = "0.3.33"
+wasm-bindgen = { version = "0.2.84", default-features = false, features = [
+  "std",
+  "spans",
+] }
+wasm-bindgen-futures = { version = "0.4.30", default-features = false }
+gloo = { version = "0.11.0", features = ["futures"] }
+dominator = "0.5.34"
+console_error_panic_hook = "0.1.7"
+derive_builder = "0.12.0"
+custom_derive = "0.1.7"
