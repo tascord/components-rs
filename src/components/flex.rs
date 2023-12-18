@@ -6,7 +6,7 @@ use web_sys::HtmlElement;
 
 use crate::helpers::css::{State, CSS};
 
-use super::ty::{Component, RemSizing};
+use super::ty::{Component, RemSizing, Reactive};
 
 #[derive(Default, Clone)]
 pub enum FlexDirection {
@@ -38,7 +38,7 @@ pub struct Flex {
     wrap: bool,
     direction: FlexDirection,
 
-    styles: Vec<(String, String)>,
+    styles: Vec<(String, Reactive<String>)>,
 }
 
 impl Flex {
@@ -49,7 +49,7 @@ impl Flex {
 }
 
 impl Component for Flex {
-    fn style(&mut self, style: (String, String)) -> &mut Self {
+    fn style(&mut self, style: (String, Reactive<String>)) -> &mut Self {
         self.styles.push(style);
         self
     }
@@ -64,7 +64,6 @@ impl Component for Flex {
             .add_state(
                 None,
                 State::new()
-                    .bulk(&self.styles)
                     .add_property("display", "flex")
                     .add_property("flex-direction", &self.direction.to_string())
                     .add_property(

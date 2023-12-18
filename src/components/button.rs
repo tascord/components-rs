@@ -1,4 +1,6 @@
-use dominator::html;
+use std::rc::Rc;
+
+use dominator::{html, with_node};
 use factoryizer::Factory;
 
 use crate::helpers::{
@@ -6,7 +8,7 @@ use crate::helpers::{
     css::{State, CSS},
 };
 
-use super::ty::{Colour, Component, RemSizing};
+use super::ty::{Colour, Component, Reactive, RemSizing};
 
 #[derive(Default, Clone)]
 pub enum ButtonVariant {
@@ -18,19 +20,29 @@ pub enum ButtonVariant {
 }
 
 #[derive(Factory, Default)]
+#[into]
 pub struct Button {
-    text: &'static str,
+    text: Reactive<&'static str>,
     variant: ButtonVariant,
     colour: Colour,
     size: RemSizing,
     radius: RemSizing,
     padding: RemSizing,
+    #[skip]
+    on_click: Option<Rc<dyn Fn()>>,
+    #[skip]
+    styles: Vec<(String, Reactive<String>)>,
+}
 
-    styles: Vec<(String, String)>,
+impl Button {
+    pub fn on_click(&mut self, closure: impl Fn() + 'static) -> &mut Self {
+        self.on_click = Some(Rc::new(closure));
+        self
+    }  
 }
 
 impl Component for Button {
-    fn style(&mut self, style: (String, String)) -> &mut Self {
+    fn style(&mut self, style: (String, Reactive<String>)) -> &mut Self {
         self.styles.push(style);
         self
     }
@@ -38,15 +50,30 @@ impl Component for Button {
     fn render(&mut self, class: String) -> dominator::Dom {
         html!("button", {
             .class(&class)
-            .text(&self.text)
+            .with_node!(_e => {
+                .event({
+                    let on_click = self.on_click.clone().unwrap_or(Rc::new(|| {}));
+                    move |_evt: dominator::events::Click| {
+                        on_click();
+                    }
+                })
+            })
+            .apply(|mut d| {
+                d = self.text.apply(d);
+                for (k, v) in self.styles.iter() {
+                    d = v.apply(k.to_string(), d);
+                }
+                d
+            })
         })
     }
+    
     fn css(&self) -> CSS {
         let c = CSS::new()
             .add_state(
                 None,
                 State::new()
-                    .bulk(&self.styles)
+                    // .bulk(&self.styles)
                     .add_property("appearance", "none")
                     .add_property("border", "none")
                     .add_property("border-radius", &self.radius.mult(0.45).to_string())

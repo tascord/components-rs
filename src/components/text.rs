@@ -3,7 +3,7 @@ use factoryizer::Factory;
 
 use crate::helpers::css::{State, CSS};
 
-use super::ty::{Component, TextColour};
+use super::ty::{Component, Reactive, TextColour};
 
 #[derive(Default, Clone)]
 pub enum TextVariant {
@@ -24,12 +24,12 @@ pub struct Text {
     variant: TextVariant,
     colour: TextColour,
 
-    styles: Vec<(String, String)>,
+    styles: Vec<(String, Reactive<String>)>,
     id: Option<String>,
 }
 
 impl Component for Text {
-    fn style(&mut self, style: (String, String)) -> &mut Self {
+    fn style(&mut self, style: (String, Reactive<String>)) -> &mut Self {
         self.styles.push(style);
         self
     }
@@ -51,6 +51,12 @@ impl Component for Text {
             .class(&class)
             .text(&self.text)
             .attr("id", &self.id.clone().unwrap_or_default())
+            .apply(|mut d| {
+                for (k, v) in self.styles.iter() {
+                    d = v.apply(k.to_string(), d);
+                }
+                d
+            })
         })
     }
     fn css(&self) -> CSS {
@@ -59,26 +65,32 @@ impl Component for Text {
                 None,
                 State::new()
                     .add_property("color", &self.colour.to_string())
-                    .add_property("font-size", &match self.variant {
-                        TextVariant::Subscript => "0.83em",
-                        TextVariant::Superscript => "0.83em",
-                        TextVariant::Small => "0.75rem",
-                        TextVariant::Default => "1rem",
-                        TextVariant::H4 => "1.5rem",
-                        TextVariant::H3 => "2rem",
-                        TextVariant::H2 => "3rem",
-                        TextVariant::H1 => "4.5rem",
-                    })
-                    .add_property("font-weight", &match self.variant {
-                        TextVariant::Subscript => "400",
-                        TextVariant::Superscript => "400",
-                        TextVariant::Small => "400",
-                        TextVariant::Default => "400",
-                        TextVariant::H4 => "600",
-                        TextVariant::H3 => "700",
-                        TextVariant::H2 => "700",
-                        TextVariant::H1 => "700",
-                    })
+                    .add_property(
+                        "font-size",
+                        &match self.variant {
+                            TextVariant::Subscript => "0.83em",
+                            TextVariant::Superscript => "0.83em",
+                            TextVariant::Small => "0.75rem",
+                            TextVariant::Default => "1rem",
+                            TextVariant::H4 => "1.5rem",
+                            TextVariant::H3 => "2rem",
+                            TextVariant::H2 => "3rem",
+                            TextVariant::H1 => "4.5rem",
+                        },
+                    )
+                    .add_property(
+                        "font-weight",
+                        &match self.variant {
+                            TextVariant::Subscript => "400",
+                            TextVariant::Superscript => "400",
+                            TextVariant::Small => "400",
+                            TextVariant::Default => "400",
+                            TextVariant::H4 => "600",
+                            TextVariant::H3 => "700",
+                            TextVariant::H2 => "700",
+                            TextVariant::H1 => "700",
+                        },
+                    )
                     .clone(),
             )
             .clone();

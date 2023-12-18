@@ -1,6 +1,5 @@
-use std::borrow::BorrowMut;
-
-use dominator::{dom_builder, Dom, DomBuilder};
+use dominator::{Dom, DomBuilder};
+use futures_signals::signal::Mutable;
 use std::hash::Hash;
 use web_sys::HtmlElement;
 
@@ -70,20 +69,20 @@ impl Hash for RemSizing {
 
 pub trait Component {
     // Helper
-    fn style(&mut self, style: (String, String)) -> &mut Self;
+    fn style(&mut self, style: (String, Reactive<String>)) -> &mut Self;
 
     // Constructing functions
     fn mt(&mut self, s: RemSizing) -> &mut Self {
-        self.style(("margin-".to_string(), s.to_string()))
+        self.style(("margin-".to_string(), s.to_string().into()))
     }
     fn mb(&mut self, s: RemSizing) -> &mut Self {
-        self.style(("margin-".to_string(), s.to_string()))
+        self.style(("margin-".to_string(), s.to_string().into()))
     }
     fn ml(&mut self, s: RemSizing) -> &mut Self {
-        self.style(("margin-".to_string(), s.to_string()))
+        self.style(("margin-".to_string(), s.to_string().into()))
     }
     fn mr(&mut self, s: RemSizing) -> &mut Self {
-        self.style(("margin-".to_string(), s.to_string()))
+        self.style(("margin-".to_string(), s.to_string().into()))
     }
 
     // Computing functions
@@ -141,6 +140,68 @@ impl RemSizing {
             RemSizing::Lg => RemSizing::Rem(1.5 * value),
             RemSizing::Xl => RemSizing::Rem(2.0 * value),
             RemSizing::Rem(rem) => RemSizing::Rem(rem * value),
+        }
+    }
+}
+
+#[derive(Clone)]
+pub enum Reactive<T> {
+    Static(T),
+    Dynamic(Mutable<T>),
+}
+
+impl Default for Reactive<String> {
+    fn default() -> Self {
+        Reactive::Static("".to_string())
+    }
+}
+
+impl Default for Reactive<&'static str> {
+    fn default() -> Self {
+        Reactive::Static("")
+    }
+}
+
+// Style/Class implimentations
+impl From<String> for Reactive<String> {
+    fn from(value: String) -> Self {
+        Reactive::Static(value)
+    }
+}
+
+impl From<Mutable<String>> for Reactive<String> {
+    fn from(value: Mutable<String>) -> Self {
+        Reactive::Dynamic(value)
+    }
+}
+
+impl Reactive<String> {
+    pub fn apply(&self, name: String, e: DomBuilder<HtmlElement>) -> DomBuilder<HtmlElement> {
+        match self {
+            Reactive::Static(value) => e.style(name, value),
+            Reactive::Dynamic(value) => e.style_signal(name, value.signal_cloned()),
+        }
+    }
+}
+
+// Text implimentations
+impl From<&'static str> for Reactive<&'static str> {
+    fn from(value: &'static str) -> Self {
+        Reactive::Static(value)
+    }
+}
+
+impl From<Mutable<&'static str>> for Reactive<&'static str> {
+    fn from(value: Mutable<&'static str>) -> Self {
+        Reactive::Dynamic(value)
+    }
+}
+
+impl Reactive<&'static str> {
+    pub fn apply(&self, e: DomBuilder<HtmlElement>) -> DomBuilder<HtmlElement> {
+        match self {
+            Reactive::Static(value) => e.text(value),
+            Reactive::Dynamic(value) => e.text_signal(value.signal_cloned()),
         }
     }
 }
