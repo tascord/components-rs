@@ -1,8 +1,12 @@
-use crate::{
-    components::{button::ButtonVariant, text::TextVariant, *},
-    helpers::css::style_element,
+use crate::components::{
+    button::ButtonVariant,
+    text::TextVariant,
+    ty::{Colour, RemSizing},
+    *,
 };
+use components::shell::SidebarItem;
 use dominator::{html, Dom};
+use helpers::Provider;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
@@ -17,6 +21,8 @@ pub fn display_case(element: Dom, label: &str) -> Dom {
         .style("align-items", "center")
         .style("justify-content", "center")
         .style("border", "1px solid #eeeeee")
+        .style("width", "20vw")
+        .style("min-width", "20rem")
         .child(html!("div", {
             .style("margin", "1rem")
             .child(element)
@@ -43,6 +49,7 @@ pub fn row(label: &str, elements: Vec<Dom>) -> Dom {
         .child(
             html!("h2", {
                 .text(label)
+                .attr("id", &label.to_lowercase())
                 .style("padding-left", "1rem")
                 .style("margin", "0")
                 .style("font-size", "30px")
@@ -53,46 +60,62 @@ pub fn row(label: &str, elements: Vec<Dom>) -> Dom {
             html!("div", {
                 .style("display", "flex")
                 .style("flex-direction", "row")
+                .style("flex-wrap", "wrap")
                 .style("align-items", "center")
                 .style("justify-content", "center")
-                .style("max-width", "calc(100vw - 2rem)")
-                .style("overflow-x", "auto")
                 .children(elements)
                 })
         )
     })
 }
 
+pub fn display() -> Dom {
+    Shell::new()
+    .title("RMComponents — Example page")
+            .sidebar(vec![
+                SidebarItem::Title("Components"),
+                SidebarItem::Item("Button", "#button"),
+                SidebarItem::Item("Text", "#text"),
+                SidebarItem::Item("Flex", "#flex"),
+            ])
+            .child(Some(
+                html!("div", {
+                    .child(row("Button", vec![
+                        display_case(Button::new().text("Hello, world!").dom(), "Button (Solid)"),
+                        display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Light).dom(), "Button (Light)"),
+                        display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Outline).dom(), "Button (Outline)"),
+                        display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Subtle).dom(), "Button (Subtle)"),
+                    ]))
+                    .child(row("Text", vec![
+                        display_case(Text::new().text("Hello, world!").variant(TextVariant::Subscript).dom(), "Text (Subcript)"),
+                        display_case(Text::new().text("Hello, world!").variant(TextVariant::Superscript).dom(), "Text (Superscript)"),
+                        display_case(Text::new().text("Hello, world!").variant(TextVariant::Small).dom(), "Text (Small)"),
+                        display_case(Text::new().text("Hello, world!").dom(), "Text (Default)"),
+                        display_case(Text::new().text("Hello, world!").variant(TextVariant::H4).dom(), "Text (H4)"),
+                        display_case(Text::new().text("Hello, world!").variant(TextVariant::H3).dom(), "Text (H3)"),
+                        display_case(Text::new().text("Hello, world!").variant(TextVariant::H2).dom(), "Text (H2)"),
+                        display_case(Text::new().text("Hello, world!").variant(TextVariant::H1).dom(), "Text (H1)"),
+                    ]))
+                    .child(row("Flex", vec![
+                        display_case(
+                            Flex::new()
+                                .child(Button::new().colour(Colour::Orange).variant(ButtonVariant::Light).text("Hello,").dom())
+                                .child(Button::new().colour(Colour::Orange).variant(ButtonVariant::Light).text("world!").dom())
+                                .space_x(RemSizing::Md)
+                                .space_y(RemSizing::None)
+                                .dom(),
+                            "Flex (Default)")
+                    ]))
+                })
+            )).dom()
+}
+
 pub struct App {}
 impl App {
     pub fn render(self: Rc<Self>) -> Dom {
-        html!("main", {
-            .child(style_element())
-            .child(row("Button", vec![
-                display_case(Button::new().text("Hello, world!").ok(), "Button (Solid)"),
-                display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Light).ok(), "Button (Light)"),
-                display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Outline).ok(), "Button (Outline)"),
-                display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Subtle).ok(), "Button (Subtle)"),
-            ]))
-            .child(row("Text", vec![
-                display_case(Text::new().text("Hello, world!").variant(TextVariant::Subscript).ok(), "Text (Subcript)"),
-                display_case(Text::new().text("Hello, world!").variant(TextVariant::Superscript).ok(), "Text (Superscript)"),
-                display_case(Text::new().text("Hello, world!").variant(TextVariant::Small).ok(), "Text (Small)"),
-                display_case(Text::new().text("Hello, world!").ok(), "Text (Default)"),
-                display_case(Text::new().text("Hello, world!").variant(TextVariant::H4).ok(), "Text (H4)"),
-                display_case(Text::new().text("Hello, world!").variant(TextVariant::H3).ok(), "Text (H3)"),
-                display_case(Text::new().text("Hello, world!").variant(TextVariant::H2).ok(), "Text (H2)"),
-                display_case(Text::new().text("Hello, world!").variant(TextVariant::H1).ok(), "Text (H1)"),
-            ]))
-            .child(row("Flex", vec![
-                display_case(
-                    Flex::new()
-                        .child(Button::new().text("Hello,").ok())
-                        .child(Button::new().text("world!").ok())
-                        .ok(),
-                    "Flex (Default)")
-            ]))
-        })
+        let mut provider = Provider::new();
+        provider.child(display());
+        provider.dom()
     }
 }
 

@@ -23,10 +23,17 @@ pub struct Text {
     text: &'static str,
     variant: TextVariant,
     colour: TextColour,
+
+    styles: Vec<(String, String)>,
+    id: Option<String>,
 }
 
 impl Component for Text {
-    fn render(&mut self, id: String) -> dominator::Dom {
+    fn style(&mut self, style: (String, String)) -> &mut Self {
+        self.styles.push(style);
+        self
+    }
+    fn render(&mut self, class: String) -> dominator::Dom {
         html!({
             // This could all be a <span> but
             // samantics are important for accesibility
@@ -41,8 +48,9 @@ impl Component for Text {
                 TextVariant::H1 => "h1"
             }
         }, {
-            .attr("id", &id)
+            .class(&class)
             .text(&self.text)
+            .attr("id", &self.id.clone().unwrap_or_default())
         })
     }
     fn css(&self) -> CSS {

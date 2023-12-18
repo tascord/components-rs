@@ -25,12 +25,19 @@ pub struct Button {
     size: RemSizing,
     radius: RemSizing,
     padding: RemSizing,
+
+    styles: Vec<(String, String)>,
 }
 
 impl Component for Button {
-    fn render(&mut self, id: String) -> dominator::Dom {
+    fn style(&mut self, style: (String, String)) -> &mut Self {
+        self.styles.push(style);
+        self
+    }
+
+    fn render(&mut self, class: String) -> dominator::Dom {
         html!("button", {
-            .attr("id", &id)
+            .class(&class)
             .text(&self.text)
         })
     }
@@ -39,6 +46,7 @@ impl Component for Button {
             .add_state(
                 None,
                 State::new()
+                    .bulk(&self.styles)
                     .add_property("appearance", "none")
                     .add_property("border", "none")
                     .add_property("border-radius", &self.radius.mult(0.45).to_string())
@@ -84,7 +92,7 @@ impl Component for Button {
                     .clone(),
             )
             .add_state(
-                Some("hover"),
+                Some(":hover"),
                 State::new()
                     .add_property(
                         "background",
@@ -99,7 +107,7 @@ impl Component for Button {
                     .clone(),
             )
             .add_state(
-                Some("active"),
+                Some(":active"),
                 State::new().add_property("transform-y", "-0.5rem").clone(),
             )
             .clone();

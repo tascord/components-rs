@@ -1,3 +1,5 @@
+use std::{rc::Rc, sync::Arc};
+
 use dominator::{html, Dom, DomBuilder};
 use factoryizer::Factory;
 use web_sys::HtmlElement;
@@ -29,25 +31,32 @@ impl ToString for FlexDirection {
 
 #[derive(Factory, Default)]
 pub struct Flex {
-    children: Vec<DomBuilder<HtmlElement>>,
+    as_tag: Option<&'static str>,
+    children: Vec<Dom>,
     space_x: RemSizing,
     space_y: RemSizing,
     wrap: bool,
     direction: FlexDirection,
+
+    styles: Vec<(String, String)>,
 }
 
 impl Flex {
-    pub fn child(&mut self, child: DomBuilder<HtmlElement>) -> &mut Self {
+    pub fn child(&mut self, child: Dom) -> &mut Self {
         self.children.push(child);
         self
     }
 }
 
 impl Component for Flex {
-    fn render(&mut self, id: String) -> dominator::Dom {
-        html!("div", {
-            .attr("id", &id)
-            .children(self.children.into_iter().map(|d| d.into_dom()).collect::<Vec<Dom>>())
+    fn style(&mut self, style: (String, String)) -> &mut Self {
+        self.styles.push(style);
+        self
+    }
+    fn render(&mut self, class: String) -> dominator::Dom {
+        html!(self.as_tag.unwrap_or("div"), {
+            .class(&class)
+            .children(self.children.iter_mut().map(|c| c))
         })
     }
     fn css(&self) -> CSS {
@@ -55,6 +64,7 @@ impl Component for Flex {
             .add_state(
                 None,
                 State::new()
+                    .bulk(&self.styles)
                     .add_property("display", "flex")
                     .add_property("flex-direction", &self.direction.to_string())
                     .add_property(
@@ -69,10 +79,8 @@ impl Component for Flex {
             .add_state(
                 Some("> * + *"),
                 State::new()
-                    .add_property(
-                        "margin",
-                        &format!("{} {}", self.space_y.to_string(), self.space_x.to_string()),
-                    )
+                    .add_property("margin-left", &self.space_x.to_string())
+                    .add_property("margin-top", &self.space_y.to_string())
                     .clone(),
             )
             .clone();
