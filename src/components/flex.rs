@@ -1,8 +1,6 @@
-use std::{rc::Rc, sync::Arc};
 
-use dominator::{html, Dom, DomBuilder};
+use dominator::{html, Dom};
 use factoryizer::Factory;
-use web_sys::HtmlElement;
 
 use crate::helpers::css::{State, CSS};
 

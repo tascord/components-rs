@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
     --sidebar-open-width: 250px;
     --title-height: 60px;

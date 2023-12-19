@@ -12,7 +12,6 @@ pub enum Colour {
     Blue,
     Red,
     Pink,
-    Orange,
     Hex(&'static str),
 }
 

@@ -99,8 +99,8 @@ pub fn display() -> Dom {
                     .child(row("Flex", vec![
                         display_case(
                             Flex::new()
-                                .child(Button::new().colour(Colour::Orange).variant(ButtonVariant::Light).text("Hello,").dom())
-                                .child(Button::new().colour(Colour::Orange).variant(ButtonVariant::Light).text("world!").dom())
+                                .child(Button::new().colour(Colour::Red).variant(ButtonVariant::Light).text("Hello,").dom())
+                                .child(Button::new().colour(Colour::Red).variant(ButtonVariant::Light).text("world!").dom())
                                 .space_x(RemSizing::Md)
                                 .space_y(RemSizing::None)
                                 .dom(),

@@ -22,11 +22,10 @@ pub struct Theme {
 impl Default for Theme {
     fn default() -> Self {
         let mut colours: HashMap<Colour, String> = HashMap::new();
-        colours.insert(Colour::Grey, "#9e9e9e".to_string());
-        colours.insert(Colour::Blue, "#2196f3".to_string());
-        colours.insert(Colour::Red, "#f44336".to_string());
-        colours.insert(Colour::Pink, "#e91e63".to_string());
-        colours.insert(Colour::Orange, "#ff9800".to_string());
+        colours.insert(Colour::Grey, "#1E1E1E".to_string());
+        colours.insert(Colour::Blue, "#5576B9".to_string());
+        colours.insert(Colour::Red, "#F15A4D".to_string());
+        colours.insert(Colour::Pink, "#EE3075".to_string());
 
         let mut sizing: HashMap<RemSizing, f32> = HashMap::new();
         sizing.insert(RemSizing::Xs, 0.5);

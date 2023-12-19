@@ -10,6 +10,7 @@ use crate::components::ty::Colour;
 
 lazy_static! {
     pub static ref GENERATED_CSS: Mutable<HashMap<String, String>> = Mutable::new(HashMap::new());
+    pub static ref GENERATED_MOBILE_CSS: Mutable<HashMap<String, String>> = Mutable::new(HashMap::new());
 }
 
 pub fn style_element() -> Dom {
@@ -19,16 +20,19 @@ pub fn style_element() -> Dom {
         .text("\n\n/* Generated CSS */")
         .text_signal(THEME.signal_cloned().map(|_theme| {
             format!(
-                ":root {{ --grey: {}; --blue: {}; --red: {}; --pink: {}; --orange: {}; }}",
+                ":root {{ --grey: {}; --blue: {}; --red: {}; --pink: {}; }}",
                 Colour::Grey.to_string(),
                 Colour::Blue.to_string(),
                 Colour::Red.to_string(),
                 Colour::Pink.to_string(),
-                Colour::Orange.to_string(),
             )
         }))
         .text_signal(GENERATED_CSS.signal_cloned().map(|css| {
             css.into_iter().map(|(class, css)| format!(".{class} {{ {css} }}")).collect::<Vec<String>>().join("\n")
+        }))
+        .text_signal(GENERATED_MOBILE_CSS.signal_cloned().map(|css| {
+            format!("@media screen and (max-width: 768px) {{ {} }}", 
+                css.into_iter().map(|(class, css)| format!(".{class} {{ {css} }}")).collect::<Vec<String>>().join("\n"))
         }))
     })
 }
@@ -36,6 +40,16 @@ pub fn style_element() -> Dom {
 pub fn add_css(id: String, css: String) {
     GENERATED_CSS.set(
         GENERATED_CSS
+            .get_cloned()
+            .into_iter()
+            .chain(vec![(id, css)])
+            .collect(),
+    )
+}
+
+pub fn add_mobile_css(id: String, css: String) {
+    GENERATED_MOBILE_CSS.set(
+        GENERATED_MOBILE_CSS
             .get_cloned()
             .into_iter()
             .chain(vec![(id, css)])
@@ -72,6 +86,7 @@ impl State {
 pub struct CSS {
     identifier: String,
     pub states: HashMap<String, State>,
+    pub mobile_states: HashMap<String, State>,
 }
 
 impl CSS {
@@ -79,11 +94,17 @@ impl CSS {
         Self {
             identifier: CSS::generate_identifier(),
             states: HashMap::new(),
+            mobile_states: HashMap::new(),
         }
     }
 
     pub fn add_state(&mut self, state: Option<&str>, properties: State) -> &mut Self {
         self.states.insert(state.unwrap_or_default().to_string(), properties);
+        self
+    }
+
+    pub fn add_mobile(&mut self, state: Option<&str>, properties: State) -> &mut Self {
+        self.mobile_states.insert(state.unwrap_or_default().to_string(), properties);
         self
     }
 
@@ -102,6 +123,20 @@ impl CSS {
             }), css);
         });
 
+        self.mobile_states.iter().for_each(|(state, properties)| {
+            let mut css = String::new();
+            properties.properties.iter().for_each(|(key, value)| {
+                css.push_str(&format!("{}: {};\n", key, value));
+            });
+            add_mobile_css(format!("{}{}", self.identifier, {
+                if state.is_empty() {
+                    "".to_string()
+                } else {
+                    format!("{}", state)
+                }
+            }), css);
+        });
+        
         self.identifier
     }
 
