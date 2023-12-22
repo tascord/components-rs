@@ -1,15 +1,12 @@
-use dominator::{html, Dom};
+use dominator::{html, with_node, Dom};
 use factoryizer::Factory;
 use futures_signals::signal::{Mutable, SignalExt};
+use tabler_dominator::icon;
 
-use crate::{
-    components::{
-        brand::{Brand, BrandVariant},
-        button::ButtonVariant,
-        ty::RemSizing,
-        Button,
-    },
-    helpers::css::{State, CSS},
+use crate::components::{
+    brand::{Brand, BrandVariant},
+    button::ButtonVariant,
+    Button,
 };
 
 use super::ty::{Component, Reactive};
@@ -35,6 +32,7 @@ pub enum SidebarState {
     #[default]
     Open,
     Closed,
+    Default,
 }
 
 impl Component for Shell {
@@ -42,21 +40,32 @@ impl Component for Shell {
         self.styles.push(style);
         self
     }
-    fn render(&mut self, class: String) -> dominator::Dom {
+    fn render(&mut self, _: String) -> dominator::Dom {
         let open = self.open.clone();
         html!("div", {
-            .class(&class)
+            .class("flex")
+            .class("flex-col")
+            .class("w-screen")
+            .class("h-screen")
+            .class("fixed")
             .style_signal("--sidebar-width", self.open.signal_cloned().map(|o| {
                 if o == SidebarState::Open { "var(--sidebar-open-width)" } else { "0" }
             }))
             .child(
                 html!("header", {
+                    .class("text-white")
+                    .class("w-full")
+                    .class("h-[var(--title-height)]")
+                    .class("bg-black")
+                    .class("flex")
+                    .class("items-center")
+                    .class("space-x-2")
                     .child_signal(open.signal_cloned().map(move |o| {
                         let open = open.clone();
                         match o {
                             SidebarState::Open => None,
-                            SidebarState::Closed => Some(
-                                Button::new().variant(ButtonVariant::Light).text("+").on_click(move || {
+                            SidebarState::Closed | SidebarState::Default => Some(
+                                Button::new().variant(ButtonVariant::Subtle).child(icon!("menu-2")).on_click(move || {
                                     open.set(SidebarState::Open)
                                 }).dom()
                             )
@@ -64,6 +73,11 @@ impl Component for Shell {
                     }))
                     .child(
                         html!("a", {
+                            .class("border-0")
+                            .class("w-[max(var(--sidebar-width),7.5rem)]")
+                            .class("h-[var(--title-height)]")
+                            .class("grid")
+                            .class("place-items-center")
                             .child(
                                 Brand::new().variant(BrandVariant::Mark).style(("height".to_string(), "calc(100% - 1rem)".to_string().into())).dom()
                             )
@@ -73,13 +87,27 @@ impl Component for Shell {
                     .child(
                         html!("h1", {
                             .text(&self.title)
+                            .class("text-xl")
+                            .class("font-semibold")
                         })
                     )
                 })
             )
             .child(
                 html!("nav", {
+                    .class("text-white")
+                    .class("flex")
+                    .class("flex-col")
+                    .class("flex-1")
+                    .class("w-[var(--sidebar-width)]")
+                    .class("max-w-[var(--sidebar-width)]")
+                    .class("items-center")
+                    .class("bg-black")
+                    .class("overflow-y-auto")
+                    .class("overflow-x-hidden")
                     .child(html!("ul", {
+                        .class("w-full")
+                        .class("overflow-x-auto") // TODO: Make this elipsis
                         .children(
                             self.sidebar.iter_mut().map(|item| {
                                 match item {
@@ -88,12 +116,17 @@ impl Component for Shell {
                                             .child( html!("a", {
                                                 .text(text)
                                                 .attr("href", link)
+                                                .class("pl-2")
+                                                .class("mb-1")
+                                                .class("w-[calc(100%-1rem)]")
                                             }))
                                        })
                                     }
                                     SidebarItem::Title(text) => {
                                         html!("h2", {
                                             .text(text)
+                                            .class("text-center")
+                                            .class("my-2")
                                         })
                                     }
                                     SidebarItem::Spacer => {
@@ -103,7 +136,7 @@ impl Component for Shell {
                             })
                         )
                     }))
-                    .child(Button::new().variant(ButtonVariant::Subtle).text("-").on_click({
+                    .child(Button::new().variant(ButtonVariant::Subtle).child(icon!("x")).on_click({
                         let open = self.open.clone();
                         move || {
                             open.set({
@@ -120,111 +153,21 @@ impl Component for Shell {
             .child(
                 html!("main", {
                     .child(self.child.take().unwrap())
+                    .class("absolute")
+                    .class("left-0")
+                    .class("top-0")
+                    .class("ml-[var(--sidebar-width)]")
+                    .class("mt-[var(--title-height)]")
+                    .class("overflow-auto")
+                    .class("w-[calc(100vw-var(--sidebar-width))]")
+                    .class("h-[calc(100vh-var(--title-height))]")
+                    .class("max-w-[calc(100vw-var(--sidebar-width))]")
+                    .class("max-h-[calc(100vh-var(--title-height))]")
                 })
             )
         })
     }
-    fn css(&self) -> CSS {
-        let c = CSS::new()
-            .add_state(
-                None,
-                State::new()
-                    .add_property("position", "fixed")
-                    .add_property("display", "flex")
-                    .add_property("flex-direction", "column")
-                    .add_property("width", "100vw")
-                    .add_property("height", "100vh")
-                    .clone(),
-            )
-            .add_state(
-                Some("> header"),
-                State::new()
-                    .add_property("color", "white")
-                    .add_property("width", "100%")
-                    .add_property("height", "var(--title-height)")
-                    .add_property("background", "black")
-                    .add_property("display", "flex")
-                    .add_property("align-items", "center")
-                    .clone(),
-            )
-            .add_state(
-                Some("> header > a"),
-                State::new()
-                    .add_property("width", "max(var(--sidebar-width), 7.5rem)")
-                    .add_property("height", "var(--title-height)")
-                    .add_property("display", "grid")
-                    .add_property("place-items", "center")
-                    .clone(),
-            )
-            .add_state(
-                Some("> header > h1"),
-                State::new()
-                    .add_property("margin", "0")
-                    .add_property("padding", "0")
-                    .add_property("font-size", "1.25rem")
-                    .add_property("font-weight", "400")
-                    .clone(),
-            )
-            .add_state(
-                Some("> header > *"),
-                State::new().add_property("margin", "0.5rem").clone(),
-            )
-            .add_state(
-                Some("> nav"),
-                State::new()
-                    .add_property("color", "white")
-                    .add_property("display", "flex")
-                    .add_property("flex-direction", "column")
-                    .add_property("flex", "1")
-                    .add_property("width", "var(--sidebar-width)")
-                    .add_property("max-width", "var(--sidebar-width)")
-                    .add_property("background", "black")
-                    .add_property("align-items", "center")
-                    .add_property("overflow-y", "auto")
-                    .add_property("overflow-x", "clip")
-                    .clone(),
-            )
-            .add_state(
-                Some("> nav > ul"),
-                State::new()
-                    .add_property("padding", "0")
-                    .add_property("margin", "0")
-                    .add_property("list-style", "none")
-                    .add_property("width", "100%")
-                    .add_property("overflow-x", "auto")
-                    .clone(),
-            )
-            .add_state(
-                Some("> nav > ul > li"),
-                State::new()
-                    .add_property("padding-left", "1rem")
-                    .add_property("margin-bottom", "0.25rem")
-                    .add_property("width", "calc(100% - 1rem)")
-                    .clone(),
-            )
-            .add_state(
-                Some("> nav > ul > h2"),
-                State::new()
-                    .add_property("text-align", "center")
-                    .add_property("margin", "1rem 0")
-                    .clone(),
-            )
-            .add_state(
-                Some("> main"),
-                State::new()
-                    .add_property("position", "absolute")
-                    .add_property("left", "0")
-                    .add_property("top", "0")
-                    .add_property("margin-left", "var(--sidebar-width)")
-                    .add_property("margin-top", "var(--title-height)")
-                    .add_property("overflow", "auto")
-                    .add_property("width", "calc(100vw - var(--sidebar-width))")
-                    .add_property("height", "calc(100vh - var(--title-height))")
-                    .add_property("max-width", "calc(100vw - var(--sidebar-width))")
-                    .add_property("max-height", "calc(100vh - var(--title-height))")
-                    .clone(),
-            )
-            .clone();
-        c
+    fn css(&self) -> crate::helpers::css::CSS {
+        crate::helpers::css::CSS::new()
     }
 }

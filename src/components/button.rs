@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use dominator::{class, html, with_node, pseudo};
+use dominator::{class, html, with_node, pseudo, Dom};
 use factoryizer::Factory;
 
 use crate::helpers::{
@@ -34,12 +34,18 @@ pub struct Button {
     #[skip]
     styles: Vec<(String, Reactive<String>)>,
     #[skip]
-    classes: Vec<Reactive<String>>,
+    classes: Vec<String>,
+    #[skip]
+    children: Vec<Dom>,
 }
 
 impl Button {
     pub fn on_click(&mut self, closure: impl Fn() + 'static) -> &mut Self {
         self.on_click = Some(Rc::new(closure));
+        self
+    }
+    pub fn child(&mut self, child: Dom) -> &mut Self {
+        self.children.push(child);
         self
     }
 }
@@ -93,17 +99,15 @@ impl Component for Button {
                     }
                 )
             })
+            .children(self.children.iter_mut().map(|c| c))
             .apply(|mut d| {
                 d = self.text.apply(d);
                 for (k, v) in self.styles.iter() {
                     d = v.apply(k.to_string(), d);
                 }
-
-                self.classes.iter().fold(d, |d, c| match c {
-                    Reactive::Static(c) => d.class(c),
-                    Reactive::Dynamic(c) => d.class_signal(c.signal_cloned()),
-                });
-
+                for c in self.classes.iter() {
+                    d = d.class(c);
+                }
                 d
             })
         })

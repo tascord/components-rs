@@ -30,12 +30,14 @@ impl ToString for FlexDirection {
 #[derive(Factory, Default)]
 pub struct Flex {
     as_tag: Option<&'static str>,
-    children: Vec<Dom>,
     space_x: RemSizing,
     space_y: RemSizing,
     wrap: bool,
     direction: FlexDirection,
-
+    
+    #[skip]
+    children: Vec<Dom>,
+    #[skip]
     styles: Vec<(String, Reactive<String>)>,
 }
 

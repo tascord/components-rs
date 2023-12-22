@@ -785,6 +785,7 @@ dependencies = [
  "hex_color",
  "lazy_static",
  "rand",
+ "tabler-dominator",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-timer",
@@ -904,6 +905,18 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "tabler-dominator"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f380c800a7743f62016653ea7f3c1c9e721b48b861301d3fe582153023974f05"
+dependencies = [
+ "dominator",
+ "lazy_static",
+ "quote",
+ "web-sys",
 ]
 
 [[package]]

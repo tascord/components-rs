@@ -5,9 +5,10 @@ use crate::components::{
     *,
 };
 use components::shell::SidebarItem;
-use dominator::{html, Dom};
+use dominator::{html, with_node, Dom};
 use helpers::Provider;
 use std::rc::Rc;
+use tabler_dominator::icon;
 use wasm_bindgen::prelude::*;
 
 pub mod components;
