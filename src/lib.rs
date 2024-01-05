@@ -1,14 +1,14 @@
 use crate::components::{
     button::ButtonVariant,
+    tabs::Tab,
     text::TextVariant,
     ty::{Colour, RemSizing},
     *,
 };
 use components::shell::SidebarItem;
-use dominator::{html, with_node, Dom};
+use dominator::{html, Dom};
 use helpers::Provider;
 use std::rc::Rc;
-use tabler_dominator::icon;
 use wasm_bindgen::prelude::*;
 
 pub mod components;
@@ -75,12 +75,31 @@ pub fn display() -> Dom {
     .title("RMComponents — Example page")
             .sidebar(vec![
                 SidebarItem::Title("Components"),
+                SidebarItem::Item("Tabs", "#tabs"),
                 SidebarItem::Item("Button", "#button"),
                 SidebarItem::Item("Text", "#text"),
                 SidebarItem::Item("Flex", "#flex"),
             ])
             .child(Some(
                 html!("div", {
+                    .child(row("Tabs", vec![
+                        display_case(Tabs::new().colour(Colour::Blue).placement(tabs::TabPlacement::Bottom).tabs(vec![
+                            Tab::new("Source Code", "source", html!("pre", { .text("<rust>") })),
+                            Tab::new("Generated Html", "generated", html!("pre", { .text("<html>") }))
+                        ]).dom(), "Tabs (Bottom)"),
+                        display_case(Tabs::new().colour(Colour::Pink).placement(tabs::TabPlacement::Top).tabs(vec![
+                            Tab::new("Source Code", "source", html!("pre", { .text("<rust>") })),
+                            Tab::new("Generated Html", "generated", html!("pre", { .text("<html>") }))
+                        ]).dom(), "Tabs (Top, Pink)"),
+                        display_case(Tabs::new().colour(Colour::Red).placement(tabs::TabPlacement::Left).tabs(vec![
+                            Tab::new("Source Code", "source", html!("pre", { .text("<rust>") })),
+                            Tab::new("Generated Html", "generated", html!("pre", { .text("<html>") }))
+                        ]).dom(), "Tabs (Left, Red)"),
+                        display_case(Tabs::new().colour(Colour::Grey).placement(tabs::TabPlacement::Right).tabs(vec![
+                            Tab::new("Source Code", "source", html!("pre", { .text("<rust>") })),
+                            Tab::new("Generated Html", "generated", html!("pre", { .text("<html>") }))
+                        ]).dom(), "Tabs (Right, Grey)"),
+                    ]))
                     .child(row("Button", vec![
                         display_case(Button::new().text("Hello, world!").dom(), "Button (Solid)"),
                         display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Light).dom(), "Button (Light)"),
