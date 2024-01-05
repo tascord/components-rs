@@ -18,3 +18,6 @@ pub use brand::Brand;
 
 pub mod tabs;
 pub use tabs::{Tab, Tabs};
+
+pub mod table;
+pub use table::{Table, TableDirection, TableValues};

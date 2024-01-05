@@ -53,7 +53,7 @@ impl Component for Tabs {
         self.styles.push(style);
         self
     }
-    fn render(&mut self, class: String) -> dominator::Dom {
+    fn render(&mut self, _: String) -> dominator::Dom {
         if self.selected.get_cloned().is_empty() && self.tabs.len() > 0 {
             self.selected.set(self.tabs[0].id.to_string());
         }
@@ -97,7 +97,6 @@ impl Component for Tabs {
 
                         d = d.child(html!("button", {
                             .text(tab.title)
-                            .class("text-lg")
                             .class("font-semibold")
                             .class("px-4")
                             .class("py-2")

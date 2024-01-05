@@ -1,3 +1,5 @@
+/pkg
 /target
 assets/**
+assets/tw.css
 !assets/**/*.css
