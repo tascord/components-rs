@@ -77,16 +77,16 @@ pub fn display() -> Dom {
     let table_data = vec![
         TableValues::new()
             .title("Max Temp".to_string())
-            .value("25")
-            .value("26")
-            .value("28")
-            .sort(Some(numerical_sort))
+            .value("1")
+            .value("2")
+            .value("3")
+            .sort(None) //Some(numerical_sort))
             .clone(),
         TableValues::new()
             .title("Min Temp".to_string())
-            .value("20")
-            .value("19")
-            .value("20")
+            .value("6")
+            .value("5")
+            .value("4")
             .sort(Some(numerical_sort))
             .clone(),
     ];

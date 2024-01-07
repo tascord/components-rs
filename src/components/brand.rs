@@ -1,7 +1,7 @@
-use dominator::{html, traits::StaticEvent, with_node};
+use dominator::{html, with_node};
 use factoryizer::Factory;
 
-use super::ty::{Component, Reactive, TextColour};
+use super::ty::{Component, Reactive};
 use crate::helpers::css::{State, CSS};
 use lazy_static::lazy_static;
 
