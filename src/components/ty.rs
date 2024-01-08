@@ -3,7 +3,7 @@ use futures_signals::signal::Mutable;
 use std::hash::Hash;
 use web_sys::HtmlElement;
 
-use crate::helpers::{css::CSS, theme::THEME};
+use crate::helpers::theme::THEME;
 
 #[derive(Default, Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Colour {
@@ -72,29 +72,20 @@ pub trait Component {
 
     // Constructing functions
     fn mt(&mut self, s: RemSizing) -> &mut Self {
-        self.style(("margin-".to_string(), s.to_string().into()))
+        self.style(("margin-top".to_string(), s.to_string().into()))
     }
     fn mb(&mut self, s: RemSizing) -> &mut Self {
-        self.style(("margin-".to_string(), s.to_string().into()))
+        self.style(("margin-bottom".to_string(), s.to_string().into()))
     }
     fn ml(&mut self, s: RemSizing) -> &mut Self {
-        self.style(("margin-".to_string(), s.to_string().into()))
+        self.style(("margin-left".to_string(), s.to_string().into()))
     }
     fn mr(&mut self, s: RemSizing) -> &mut Self {
-        self.style(("margin-".to_string(), s.to_string().into()))
+        self.style(("margin-right".to_string(), s.to_string().into()))
     }
 
     // Computing functions
-    fn render(&mut self, id: String) -> Dom;
-    fn css(&self) -> CSS;
-    fn dom(&mut self) -> Dom {
-        self.render(self.css().generate())
-    }
-    fn m_dom(&mut self) -> &mut Dom {
-        // let mut dom = self.render(self.css().generate());
-        // dom.borrow_mut()
-        todo!()
-    }
+    fn dom(&mut self) -> Dom;
 }
 
 impl ToString for Colour {

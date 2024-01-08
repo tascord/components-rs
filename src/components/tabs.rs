@@ -2,10 +2,7 @@ use dominator::{class, html, pseudo, with_node, Dom};
 use factoryizer::Factory;
 use futures_signals::signal::{Mutable, SignalExt};
 
-use crate::helpers::{
-    colours::{bw_on_bg, opacity},
-    css::CSS,
-};
+use crate::helpers::colours::{bw_on_bg, opacity};
 
 use super::ty::{Colour, Component, Reactive};
 
@@ -53,7 +50,7 @@ impl Component for Tabs {
         self.styles.push(style);
         self
     }
-    fn render(&mut self, _: String) -> dominator::Dom {
+    fn dom(&mut self) -> dominator::Dom {
         if self.selected.get_cloned().is_empty() && self.tabs.len() > 0 {
             self.selected.set(self.tabs[0].id.to_string());
         }
@@ -170,8 +167,5 @@ impl Component for Tabs {
                 d
             })
         })
-    }
-    fn css(&self) -> CSS {
-        CSS::new()
     }
 }

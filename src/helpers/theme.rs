@@ -4,10 +4,7 @@ use dominator::{html, Dom};
 use futures_signals::signal::{Mutable, SignalExt};
 use lazy_static::lazy_static;
 
-use crate::{
-    components::ty::{Colour, RemSizing},
-    helpers::css::style_element,
-};
+use crate::components::ty::{Colour, RemSizing};
 
 lazy_static! {
     pub static ref THEME: Mutable<Theme> = Mutable::new(Theme::default());
@@ -76,7 +73,6 @@ impl Provider {
 
             THEME.set(theme.clone());
             Some(html!("div", {
-                    .child(style_element())
                     .children(self.children.iter_mut().map(|c| c))
                 }))
 

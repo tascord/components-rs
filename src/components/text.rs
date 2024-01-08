@@ -1,7 +1,5 @@
-use dominator::html;
+use dominator::{html, class};
 use factoryizer::Factory;
-
-use crate::helpers::css::{State, CSS};
 
 use super::ty::{Component, Reactive, TextColour};
 
@@ -33,7 +31,7 @@ impl Component for Text {
         self.styles.push(style);
         self
     }
-    fn render(&mut self, class: String) -> dominator::Dom {
+    fn dom(&mut self) -> dominator::Dom {
         html!({
             // This could all be a <span> but
             // samantics are important for accesibility
@@ -48,24 +46,10 @@ impl Component for Text {
                 TextVariant::H1 => "h1"
             }
         }, {
-            .class(&class)
-            .text(&self.text)
-            .attr("id", &self.id.clone().unwrap_or_default())
-            .apply(|mut d| {
-                for (k, v) in self.styles.iter() {
-                    d = v.apply(k.to_string(), d);
-                }
-                d
-            })
-        })
-    }
-    fn css(&self) -> CSS {
-        let c = CSS::new()
-            .add_state(
-                None,
-                State::new()
-                    .add_property("color", &self.colour.to_string())
-                    .add_property(
+            .class(
+                class! {
+                    .style("color", &self.colour.to_string())
+                    .style(
                         "font-size",
                         &match self.variant {
                             TextVariant::Subscript => "0.83em",
@@ -76,9 +60,9 @@ impl Component for Text {
                             TextVariant::H3 => "2rem",
                             TextVariant::H2 => "3rem",
                             TextVariant::H1 => "4.5rem",
-                        },
+                        }
                     )
-                    .add_property(
+                    .style(
                         "font-weight",
                         &match self.variant {
                             TextVariant::Subscript => "400",
@@ -89,11 +73,18 @@ impl Component for Text {
                             TextVariant::H3 => "700",
                             TextVariant::H2 => "700",
                             TextVariant::H1 => "700",
-                        },
+                        }
                     )
-                    .clone(),
+                }
             )
-            .clone();
-        c
+            .text(&self.text)
+            .attr("id", &self.id.clone().unwrap_or_default())
+            .apply(|mut d| {
+                for (k, v) in self.styles.iter() {
+                    d = v.apply(k.to_string(), d);
+                }
+                d
+            })
+        })
     }
 }

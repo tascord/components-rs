@@ -1,8 +1,7 @@
-use dominator::{html, with_node};
+use dominator::{class, html, with_node, pseudo};
 use factoryizer::Factory;
 
 use super::ty::{Component, Reactive};
-use crate::helpers::css::{State, CSS};
 use lazy_static::lazy_static;
 
 lazy_static! {
@@ -41,9 +40,31 @@ impl Component for Brand {
         self.styles.push(style);
         self
     }
-    fn render(&mut self, class: String) -> dominator::Dom {
+    fn dom(&mut self) -> dominator::Dom {
         html!("div" => web_sys::HtmlElement, {
-            .class(&class)
+            .class(
+                class! {
+                    .style("display", "flex")
+                    .style("flex-wrap", "nowrap")
+                    .style("justify-content", "center")
+                    .style("align-items", "center")
+                    .style("height", "100%")
+                    .style(
+                        "fill",
+                         match self.colour {
+                            BrandColour::Light => "#fff",
+                            BrandColour::Dark => "#000",
+                        }
+                    )
+                    .pseudo!(" svg", {
+                        .style("height", "100%")
+                        .style("margin", "auto")
+                    })
+                    .pseudo!("> * + *", {
+                        .style("margin-left", "0.5rem")
+                    })
+                }
+            )
             .apply(|mut d| {
                 for (k, v) in self.styles.iter() {
                     d = v.apply(k.to_string(), d)
@@ -64,37 +85,5 @@ impl Component for Brand {
             })
         })
     }
-    fn css(&self) -> CSS {
-        let c = CSS::new()
-            .add_state(
-                None,
-                State::new()
-                    .add_property("display", "flex")
-                    .add_property("flex-wrap", "nowrap")
-                    .add_property("justify-content", "center")
-                    .add_property("align-items", "center")
-                    .add_property("height", "100%")
-                    .add_property(
-                        "fill",
-                        match self.colour {
-                            BrandColour::Light => "#fff",
-                            BrandColour::Dark => "#000",
-                        },
-                    )
-                    .clone(),
-            )
-            .add_state(
-                Some(" svg"),
-                State::new()
-                    .add_property("height", "100%")
-                    .add_property("margin", "auto")
-                    .clone(),
-            )
-            .add_state(
-                Some("> * + *"),
-                State::new().add_property("margin-left", "0.5rem").clone(),
-            )
-            .clone();
-        c
-    }
+
 }

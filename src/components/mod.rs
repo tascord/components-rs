@@ -21,3 +21,6 @@ pub use tabs::{Tab, Tabs};
 
 pub mod table;
 pub use table::{Table, TableDirection, TableValues};
+
+pub mod tooltip;
+pub use tooltip::Tooltip;

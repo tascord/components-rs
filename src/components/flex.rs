@@ -1,8 +1,6 @@
 
-use dominator::{html, Dom};
+use dominator::{html, Dom, class, pseudo};
 use factoryizer::Factory;
-
-use crate::helpers::css::{State, CSS};
 
 use super::ty::{Component, RemSizing, Reactive};
 
@@ -53,36 +51,26 @@ impl Component for Flex {
         self.styles.push(style);
         self
     }
-    fn render(&mut self, class: String) -> dominator::Dom {
+    fn dom(&mut self) -> dominator::Dom {
         html!(self.as_tag.unwrap_or("div"), {
-            .class(&class)
-            .children(self.children.iter_mut().map(|c| c))
-        })
-    }
-    fn css(&self) -> CSS {
-        let c = CSS::new()
-            .add_state(
-                None,
-                State::new()
-                    .add_property("display", "flex")
-                    .add_property("flex-direction", &self.direction.to_string())
-                    .add_property(
+            .class(
+                class! {
+                    .style("display", "flex")
+                    .style("flex-direction", &self.direction.to_string())
+                    .style(
                         "flex-wrap",
                         &match self.wrap {
                             true => "wrap",
                             false => "nowrap",
-                        },
+                        }
                     )
-                    .clone(),
+                    .pseudo!("> * + *", {
+                        .style("margin-left", &self.space_x.to_string())
+                        .style("margin-top", &self.space_y.to_string())
+                    })
+                }
             )
-            .add_state(
-                Some("> * + *"),
-                State::new()
-                    .add_property("margin-left", &self.space_x.to_string())
-                    .add_property("margin-top", &self.space_y.to_string())
-                    .clone(),
-            )
-            .clone();
-        c
+            .children(self.children.iter_mut().map(|c| c))
+        })
     }
 }

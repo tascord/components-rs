@@ -5,7 +5,6 @@ use factoryizer::Factory;
 
 use crate::helpers::{
     colours::{bw_on_bg, darken, opacity, TRANSPARENT},
-    css::CSS,
 };
 
 use super::ty::{Colour, Component, Reactive, RemSizing};
@@ -56,7 +55,7 @@ impl Component for Button {
         self
     }
 
-    fn render(&mut self, _: String) -> dominator::Dom {
+    fn dom(&mut self) -> dominator::Dom {
         html!("button", {
             .with_node!(_e => {
                 .event({
@@ -111,9 +110,5 @@ impl Component for Button {
                 d
             })
         })
-    }
-
-    fn css(&self) -> CSS {
-        CSS::new()
     }
 }

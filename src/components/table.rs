@@ -7,7 +7,6 @@ use crate::{
     console_log,
     helpers::{
         colours::{bw_on_bg, opacity},
-        css::CSS,
         mutable::Mutable2,
     },
 };
@@ -139,7 +138,7 @@ impl Component for Table {
         self.styles.push(style);
         self
     }
-    fn render(&mut self, _: String) -> dominator::Dom {
+    fn dom(&mut self) -> dominator::Dom {
         html!("table", {
             .child_signal(Mutable2::new(self.data.clone(), self.applied_sort.clone()).map({
                 let direction = self.direction.clone();
@@ -220,7 +219,6 @@ impl Component for Table {
                                                 })
                                             })
                                             .apply(|mut d| {
-                                                console_log!(container);
                                                 if container.sort.is_some() {
                                                     if sort.0.clone() != container.title {
                                                         d = d.child(icon!("line-dashed"))
@@ -266,9 +264,5 @@ impl Component for Table {
                 }
             }))
         })
-    }
-
-    fn css(&self) -> crate::helpers::css::CSS {
-        CSS::new()
     }
 }
