@@ -1,4 +1,4 @@
-use dominator::{html, class};
+use dominator::{class, html};
 use factoryizer::Factory;
 
 use super::ty::{Component, Reactive, TextColour};
@@ -81,7 +81,7 @@ impl Component for Text {
             .attr("id", &self.id.clone().unwrap_or_default())
             .apply(|mut d| {
                 for (k, v) in self.styles.iter() {
-                    d = v.apply(k.to_string(), d);
+                    d = v.apply_style(k.to_string(), d);
                 }
                 d
             })

@@ -21,7 +21,7 @@ impl Default for Theme {
         let mut colours: HashMap<Colour, String> = HashMap::new();
         colours.insert(Colour::Grey, "#1E1E1E".to_string());
         colours.insert(Colour::Blue, "#5576B9".to_string());
-        colours.insert(Colour::Red, "#F15A4D".to_string());
+        colours.insert(Colour::Coral, "#F15A4D".to_string());
         colours.insert(Colour::Pink, "#EE3075".to_string());
 
         let mut sizing: HashMap<RemSizing, f32> = HashMap::new();

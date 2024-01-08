@@ -3,11 +3,14 @@ use factoryizer::Factory;
 use futures_signals::signal::{Mutable, SignalExt};
 use tabler_dominator::icon;
 
-use crate::{components::{
-    brand::{Brand, BrandVariant},
-    button::ButtonVariant,
-    Button,
-}, helpers::safety::none_dom};
+use crate::{
+    components::{
+        brand::{Brand, BrandVariant},
+        button::ButtonVariant,
+        Button,
+    },
+    helpers::safety::none_dom,
+};
 
 use super::ty::{Component, Reactive};
 
@@ -40,7 +43,7 @@ impl Component for Shell {
         self.styles.push(style);
         self
     }
-    
+
     fn dom(&mut self) -> dominator::Dom {
         let open = self.open.clone();
         html!("div", {

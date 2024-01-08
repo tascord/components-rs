@@ -1,6 +1,9 @@
-use std::{task::{Context, Poll}, pin::Pin};
+use std::{
+    pin::Pin,
+    task::{Context, Poll},
+};
 
-use futures_signals::signal::{MutableSignalCloned, Mutable, Signal};
+use futures_signals::signal::{Mutable, MutableSignalCloned, Signal};
 
 pub struct Mutable2<A, B>(
     (MutableSignalCloned<A>, Mutable<A>),

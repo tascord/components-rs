@@ -24,3 +24,6 @@ pub use table::{Table, TableDirection, TableValues};
 
 pub mod tooltip;
 pub use tooltip::Tooltip;
+
+pub mod segmented_control;
+pub use segmented_control::SegmentedControl;

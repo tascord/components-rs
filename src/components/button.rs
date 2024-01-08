@@ -1,11 +1,9 @@
 use std::rc::Rc;
 
-use dominator::{class, html, with_node, pseudo, Dom};
+use dominator::{class, html, pseudo, with_node, Dom};
 use factoryizer::Factory;
 
-use crate::helpers::{
-    colours::{bw_on_bg, darken, opacity, TRANSPARENT},
-};
+use crate::helpers::colours::{bw_on_bg, darken, opacity, TRANSPARENT};
 
 use super::ty::{Colour, Component, Reactive, RemSizing};
 
@@ -21,7 +19,7 @@ pub enum ButtonVariant {
 #[derive(Factory, Default)]
 #[into]
 pub struct Button {
-    text: Reactive<&'static str>,
+    value: Reactive<String>,
     variant: ButtonVariant,
     colour: Colour,
     size: RemSizing,
@@ -39,6 +37,10 @@ pub struct Button {
 }
 
 impl Button {
+    pub fn text(&mut self, text: &str) -> &mut Self {
+        self.value = Reactive::Static(text.to_string());
+        self
+    }
     pub fn on_click(&mut self, closure: impl Fn() + 'static) -> &mut Self {
         self.on_click = Some(Rc::new(closure));
         self
@@ -100,9 +102,9 @@ impl Component for Button {
             })
             .children(self.children.iter_mut().map(|c| c))
             .apply(|mut d| {
-                d = self.text.apply(d);
+                d = self.value.apply_text(d);
                 for (k, v) in self.styles.iter() {
-                    d = v.apply(k.to_string(), d);
+                    d = v.apply_style(k.to_string(), d);
                 }
                 for c in self.classes.iter() {
                     d = d.class(c);

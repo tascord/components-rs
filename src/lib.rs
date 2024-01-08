@@ -130,6 +130,12 @@ pub fn display() -> Dom {
             ])
             .child(Some(
                 html!("div", {
+                    .child(row("Inputs", vec![
+                        display_case(SegmentedControl::new().option(("Read Only", "ro")).option(("Read/Write", "rw")).default_value("rw").dom(), "Segmented Control (Default)", None),
+                        display_case(SegmentedControl::new().option(("Read Only", "ro")).option(("Read/Write", "rw")).default_value("rw").colour(Colour::Pink).dom(), "Segmented Control (Pink)", None),
+                        display_case(SegmentedControl::new().option(("Read Only", "ro")).option(("Read/Write", "rw")).default_value("rw").colour(Colour::Coral).dom(), "Segmented Control (Coral)", None),
+                        display_case(SegmentedControl::new().option(("Read Only", "ro")).option(("Read/Write", "rw")).default_value("rw").colour(Colour::Grey).dom(), "Segmented Control (Grey)", None)
+                    ]))
                     .child(row("Table", vec![
                         display_case(
                             Table::new().data(table_data.clone().into()).direction(TableDirection::Column).dom(),
@@ -140,8 +146,8 @@ pub fn display() -> Dom {
                             "Table (Pink)", None
                         ),
                         display_case(
-                            Table::new().data(table_data.clone().into()).direction(TableDirection::Column).colour(Colour::Red).dom(),
-                            "Table (Red)", None
+                            Table::new().data(table_data.clone().into()).direction(TableDirection::Column).colour(Colour::Coral).dom(),
+                            "Table (Coral)", None
                         ),
                         display_case(
                             Table::new().data(table_data.clone().into()).direction(TableDirection::Column).colour(Colour::Grey).dom(),
@@ -157,10 +163,10 @@ pub fn display() -> Dom {
                             Tab::new("Source Code", "source", html!("pre", { .text("<rust>") })),
                             Tab::new("Generated Html", "generated", html!("pre", { .text("<html>") }))
                         ]).dom(), "Tabs (Top, Pink)", None),
-                        display_case(Tabs::new().colour(Colour::Red).placement(tabs::TabPlacement::Left).tabs(vec![
+                        display_case(Tabs::new().colour(Colour::Coral).placement(tabs::TabPlacement::Left).tabs(vec![
                             Tab::new("Source Code", "source", html!("pre", { .text("<rust>") })),
                             Tab::new("Generated Html", "generated", html!("pre", { .text("<html>") }))
-                        ]).dom(), "Tabs (Left, Red)", None),
+                        ]).dom(), "Tabs (Left, Coral)", None),
                         display_case(Tabs::new().colour(Colour::Grey).placement(tabs::TabPlacement::Right).tabs(vec![
                             Tab::new("Source Code", "source", html!("pre", { .text("<rust>") })),
                             Tab::new("Generated Html", "generated", html!("pre", { .text("<html>") }))
@@ -169,7 +175,7 @@ pub fn display() -> Dom {
                     .child(row("Button", vec![
                         display_case(Button::new().text("Hello, world!").dom(), "Button (Solid, Blue)", None),
                         display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Light).colour(Colour::Pink).dom(), "Button (Light, Pink)", None),
-                        display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Outline).colour(Colour::Red).dom(), "Button (Outline, Red)", None),
+                        display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Outline).colour(Colour::Coral).dom(), "Button (Outline, Coral)", None),
                         display_case(Button::new().text("Hello, world!").variant(ButtonVariant::Subtle).colour(Colour::Grey).dom(), "Button (Subtle, Grey)", None),
                     ]))
                     .child(row("Text", vec![
@@ -185,8 +191,8 @@ pub fn display() -> Dom {
                     .child(row("Util", vec![
                         display_case(
                             Flex::new()
-                                .child(Button::new().colour(Colour::Red).variant(ButtonVariant::Light).text("Hello,").dom())
-                                .child(Button::new().colour(Colour::Red).variant(ButtonVariant::Light).text("world!").dom())
+                                .child(Button::new().colour(Colour::Coral).variant(ButtonVariant::Light).text("Hello,").dom())
+                                .child(Button::new().colour(Colour::Coral).variant(ButtonVariant::Light).text("world!").dom())
                                 .space_x(RemSizing::Md)
                                 .space_y(RemSizing::None)
                                 .dom(),

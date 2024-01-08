@@ -26,6 +26,8 @@ colors-transform = "0.2.11"
 futures-timer = "3.0.2"
 wasm-timer = "0.2.5"
 tabler-dominator = "0.1.0"
+uuid = { version = "1.6.1", features = ["fast-rng", "v4"] }
+gloo-timers = "0.3.0"
 
 [dependencies.web-sys]
 version = "0.3.4"

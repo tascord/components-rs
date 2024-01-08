@@ -1,4 +1,4 @@
-use dominator::{class, html, with_node, pseudo};
+use dominator::{class, html, pseudo, with_node};
 use factoryizer::Factory;
 
 use super::ty::{Component, Reactive};
@@ -67,7 +67,7 @@ impl Component for Brand {
             )
             .apply(|mut d| {
                 for (k, v) in self.styles.iter() {
-                    d = v.apply(k.to_string(), d)
+                    d = v.apply_style(k.to_string(), d)
                 }
                 d
             })
@@ -85,5 +85,4 @@ impl Component for Brand {
             })
         })
     }
-
 }

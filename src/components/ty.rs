@@ -10,7 +10,7 @@ pub enum Colour {
     Grey,
     #[default]
     Blue,
-    Red,
+    Coral,
     Pink,
     Hex(&'static str),
 }
@@ -166,32 +166,23 @@ impl From<Mutable<String>> for Reactive<String> {
 }
 
 impl Reactive<String> {
-    pub fn apply(&self, name: String, e: DomBuilder<HtmlElement>) -> DomBuilder<HtmlElement> {
+    pub fn apply_style(&self, name: String, e: DomBuilder<HtmlElement>) -> DomBuilder<HtmlElement> {
         match self {
             Reactive::Static(value) => e.style(name, value),
             Reactive::Dynamic(value) => e.style_signal(name, value.signal_cloned()),
         }
     }
-}
-
-// Text implimentations
-impl From<&'static str> for Reactive<&'static str> {
-    fn from(value: &'static str) -> Self {
-        Reactive::Static(value)
-    }
-}
-
-impl From<Mutable<&'static str>> for Reactive<&'static str> {
-    fn from(value: Mutable<&'static str>) -> Self {
-        Reactive::Dynamic(value)
-    }
-}
-
-impl Reactive<&'static str> {
-    pub fn apply(&self, e: DomBuilder<HtmlElement>) -> DomBuilder<HtmlElement> {
+    pub fn apply_text(&self, e: DomBuilder<HtmlElement>) -> DomBuilder<HtmlElement> {
         match self {
             Reactive::Static(value) => e.text(value),
             Reactive::Dynamic(value) => e.text_signal(value.signal_cloned()),
         }
+    }
+}
+
+// Text implimentations
+impl From<&'static str> for Reactive<String> {
+    fn from(value: &'static str) -> Self {
+        Reactive::Static(value.to_string())
     }
 }

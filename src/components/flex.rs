@@ -1,8 +1,7 @@
-
-use dominator::{html, Dom, class, pseudo};
+use dominator::{class, html, pseudo, Dom};
 use factoryizer::Factory;
 
-use super::ty::{Component, RemSizing, Reactive};
+use super::ty::{Component, Reactive, RemSizing};
 
 #[derive(Default, Clone)]
 pub enum FlexDirection {
@@ -32,7 +31,7 @@ pub struct Flex {
     space_y: RemSizing,
     wrap: bool,
     direction: FlexDirection,
-    
+
     #[skip]
     children: Vec<Dom>,
     #[skip]

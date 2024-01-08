@@ -782,10 +782,12 @@ dependencies = [
  "futures-signals",
  "futures-timer",
  "gloo",
+ "gloo-timers",
  "hex_color",
  "lazy_static",
  "rand",
  "tabler-dominator",
+ "uuid",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-timer",
@@ -969,6 +971,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5e395fcf16a7a3d8127ec99782007af141946b4795001f876d54fb0d55978560"
 dependencies = [
  "getrandom",
+ "rand",
 ]
 
 [[package]]
