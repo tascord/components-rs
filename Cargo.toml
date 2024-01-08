@@ -1,6 +1,10 @@
 [package]
-name = "rm-components"
-version = "0.1.0"
+name = "domcom"
+description = "Dominator Component Library"
+repository = "https://github.com/tascord/domcom"
+authors = ["@tascord"]
+license = "MIT"
+version = "0.0.1"
 edition = "2021"
 
 [lib]
@@ -38,3 +42,8 @@ features = [
   'Node',
   'Window',
 ]
+
+
+[features]
+default = []
+example = []

@@ -5,7 +5,6 @@ use tabler_dominator::icon;
 
 use crate::{
     components::{
-        brand::{Brand, BrandVariant},
         button::ButtonVariant,
         Button,
     },
@@ -82,9 +81,9 @@ impl Component for Shell {
                             .class("h-[var(--title-height)]")
                             .class("grid")
                             .class("place-items-center")
-                            .child(
-                                Brand::new().variant(BrandVariant::Mark).style(("height".to_string(), "calc(100% - 1rem)".to_string().into())).dom()
-                            )
+                            // .child(
+                            //     Brand::new().variant(BrandVariant::Mark).style(("height".to_string(), "calc(100% - 1rem)".to_string().into())).dom()
+                            // )
                             .attr("href", "/")
                         })
                     )

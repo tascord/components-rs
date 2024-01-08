@@ -69,8 +69,8 @@ impl Provider {
 
     // TODO : Return a fragment instead of a DOM
     pub fn dom(mut self) -> Dom {
-        html!("div", { .child_signal(self.theme.clone().signal_cloned().map(move |theme| {
-
+        html!("div", { 
+            .child_signal(self.theme.clone().signal_cloned().map(move |theme| {
             THEME.set(theme.clone());
             Some(html!("div", {
                     .children(self.children.iter_mut().map(|c| c))

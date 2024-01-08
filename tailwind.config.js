@@ -4,7 +4,8 @@ module.exports = {
     "src/**/*.rs"
   ],
   theme: {
-    extend: {},
+    extend: {
+    },
   },
   plugins: [],
 }

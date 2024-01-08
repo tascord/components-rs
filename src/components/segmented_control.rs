@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use dominator::{class, events, html, pseudo, with_node, Dom};
 use factoryizer::Factory;
 use futures_signals::signal::{Mutable, SignalExt};
@@ -7,14 +5,7 @@ use gloo_timers::callback::Timeout;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlInputElement;
 
-use crate::{
-    console_log,
-    helpers::{
-        colours::opacity,
-        mutable::Mutable2,
-        safety::{parent_or_self, rand_id},
-    },
-};
+use crate::helpers::safety::{parent_or_self, rand_id};
 
 use super::{
     ty::{Colour, Reactive},

@@ -3,12 +3,9 @@ use factoryizer::Factory;
 use futures_signals::signal::{Mutable, SignalExt};
 use tabler_dominator::icon;
 
-use crate::{
-    console_log,
-    helpers::{
-        colours::{bw_on_bg, opacity},
-        mutable::Mutable2,
-    },
+use crate::helpers::{
+    colours::{bw_on_bg, opacity},
+    mutable::Mutable2,
 };
 
 use super::{
